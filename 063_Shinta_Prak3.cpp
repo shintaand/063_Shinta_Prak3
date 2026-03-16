@@ -620,15 +620,52 @@ string pilihmontir(){
 }
 
 void bookingservis() {
-    servis* baru = new servis();
-
+    string model, merek, kendala, tanggal;
+    
     cout << "=== SERVIS BARU ===\n";
-    cout << "Model Mobil: "; getline(cin,baru->model);
-    cout << "Merek Mobil: "; getline(cin,baru->merek);
-    cout << "Kendala: "; getline(cin,baru->kendala);
-    cout << "Tanggal Masuk Bengkel: "; getline(cin,baru->tanggal);
-    cout << "Pilih Montir:\n";
+    cout << "Model Mobil: "; getline(cin, model);
+    cout << "Merek Mobil: "; getline(cin, merek);
+    cout << "Kendala: "; getline(cin, kendala);
+    cout << "Tanggal Masuk Bengkel: "; getline(cin, tanggal);
 
+    servis* temp = front;
+    servis* ditemukan = NULL;
+    int posisi = 1;
+    int antrianKe = 0;
+
+    while (temp != NULL) {
+        if (temp->nama_p == currentuser && temp->model == model && temp->merek == merek) {
+            ditemukan = temp;
+            antrianKe = posisi;
+            break;
+        }
+        temp = temp->next;
+        posisi++;
+    }
+
+    if (ditemukan != NULL) {
+
+        cout << "Mobil ini sudah di bengkel, anda ingin menambahkan kendala ini kepada servis tersebut? (y/n): ";
+        string pilih;
+        getline(cin, pilih);
+
+        if (pilih == "y") {
+
+            ditemukan->kendala = ditemukan->kendala + " dan " + kendala;
+            simpanantrian();
+            cout << "Kendala sudah diupdate, nomor antrian anda adalah: " << antrianKe << "\n";
+            cout << "Tekan Enter untuk kembali...";
+            cin.get();
+            return;
+        }
+    }
+
+    servis* baru = new servis();
+    baru->model = model;
+    baru->merek = merek;
+    baru->kendala = kendala;
+    baru->tanggal = tanggal;
+    cout << "Pilih Montir:\n";
     baru->montir = pilihmontir();
     baru->nama_p = currentuser;
     baru->nomor_p = currenttelp;
@@ -637,15 +674,14 @@ void bookingservis() {
     enqueue(baru);
     simpanantrian();
 
-    int nomor = 0;
-    servis* scanner = front;
-    while (scanner != NULL) {
-        nomor++;
-        if (scanner == baru) break;
-        scanner = scanner->next;
+    int total = 0;
+    servis* hitung = front;
+    while(hitung != NULL) {
+        total++;
+        hitung = hitung->next;
     }
 
-    cout << "Servis sudah tercatat, nomor antrian anda adalah: " << nomor << "\n";
+    cout << "Servis sudah tercatat, nomor antrian anda adalah: " << total << "\n";
     cout << "Tekan Enter untuk kembali...";
     cin.get();
 }
